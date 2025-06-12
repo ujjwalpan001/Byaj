@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepali Compound Interest Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .calculation-breakdown {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .breakdown-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .breakdown-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .date-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇳🇵 Nepali Interest Calculator</h1>
+            <p>Compound Interest Calculator with Nepali Date System</p>
+        </div>
+        
+        <div class="form-container">
+            <form id="interestForm">
+                <div class="form-group">
+                    <label for="principal">Principal Amount (रु)</label>
+                    <input type="number" id="principal" step="0.01" min="0" required placeholder="Enter principal amount">
+                </div>
+
+                <div class="form-group">
+                    <label for="rate">Interest Rate (% per annum)</label>
+                    <input type="number" id="rate" step="0.01" min="0" max="100" required placeholder="Enter interest rate">
+                </div>
+
+                <div class="form-group">
+                    <label>Start Date (BS)</label>
+                    <div class="date-inputs">
+                        <input type="number" id="startYear" placeholder="Year (BS)" min="2000" max="2200" required>
+                        <select id="startMonth" required>
+                            <option value="">Month</option>
+                            <option value="1">Baisakh (बैशाख)</option>
+                            <option value="2">Jestha (जेष्ठ)</option>
+                            <option value="3">Ashadh (आषाढ)</option>
+                            <option value="4">Shrawan (श्रावण)</option>
+                            <option value="5">Bhadra (भाद्र)</option>
+                            <option value="6">Ashwin (आश्विन)</option>
+                            <option value="7">Kartik (कार्तिक)</option>
+                            <option value="8">Mangsir (मंसिर)</option>
+                            <option value="9">Poush (पौष)</option>
+                            <option value="10">Magh (माघ)</option>
+                            <option value="11">Falgun (फाल्गुन)</option>
+                            <option value="12">Chaitra (चैत्र)</option>
+                        </select>
+                        <input type="number" id="startDay" placeholder="Day" min="1" max="32" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>End Date (BS)</label>
+                    <div class="date-inputs">
+                        <input type="number" id="endYear" placeholder="Year (BS)" min="2000" max="2200" required>
+                        <select id="endMonth" required>
+                            <option value="">Month</option>
+                            <option value="1">Baisakh (बैशाख)</option>
+                            <option value="2">Jestha (जेष्ठ)</option>
+                            <option value="3">Ashadh (आषाढ)</option>
+                            <option value="4">Shrawan (श्रावण)</option>
+                            <option value="5">Bhadra (भाद्र)</option>
+                            <option value="6">Ashwin (आश्विन)</option>
+                            <option value="7">Kartik (कार्तिक)</option>
+                            <option value="8">Mangsir (मंसिर)</option>
+                            <option value="9">Poush (पौष)</option>
+                            <option value="10">Magh (माघ)</option>
+                            <option value="11">Falgun (फाल्गुन)</option>
+                            <option value="12">Chaitra (चैत्र)</option>
+                        </select>
+                        <input type="number" id="endDay" placeholder="Day" min="1" max="32" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="calculate-btn">Calculate Interest</button>
+            </form>
+
+            <div id="errorMessage" class="error-message"></div>
+            
+            <div id="resultContainer" class="result-container">
+                <div class="result-item">
+                    <span class="result-label">Time Duration:</span>
+                    <span class="result-value" id="timeDuration"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Principal Amount:</span>
+                    <span class="result-value" id="principalDisplay"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Total Interest:</span>
+                    <span class="result-value" id="totalInterest"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Total Amount:</span>
+                    <span class="result-value" id="totalAmount"></span>
+                </div>
+                
+                <div id="calculationBreakdown" class="calculation-breakdown">
+                    <div class="breakdown-title">📊 Calculation Breakdown:</div>
+                    <div id="breakdownDetails"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nepali month names for display
+        const nepaliMonths = [
+            'Baisakh', 'Jestha', 'Ashadh', 'Shrawan', 'Bhadra', 'Ashwin',
+            'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'
+        ];
+
+        // Days in each Nepali month (approximate - this can vary by year)
+        const daysInMonth = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
+
+        function calculateTimeDifference(startYear, startMonth, startDay, endYear, endMonth, endDay) {
+            let years = endYear - startYear;
+            let months = endMonth - startMonth;
+            let days = endDay - startDay;
+
+            // Adjust for negative days - borrow from previous month
+            if (days < 0) {
+                months--;
+                // Get days from previous month
+                let prevMonth = endMonth - 1;
+                if (prevMonth <= 0) {
+                    prevMonth = 12;
+                }
+                days += daysInMonth[prevMonth - 1]; // Add previous month's days
+            }
+
+            // Adjust for negative months - borrow from previous year
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            return { years, months, days };
+        }
+
+        function calculateCompoundInterest(principal, rate, years, months, days) {
+            let currentPrincipal = principal;
+            let totalInterest = 0;
+            let breakdown = [];
+
+            // Calculate interest for complete years
+            for (let year = 1; year <= years; year++) {
+                const yearlyInterest = currentPrincipal * rate / 100;
+                totalInterest += yearlyInterest;
+                breakdown.push(`Year ${year}: रु ${currentPrincipal.toFixed(2)} × ${rate}% = रु ${yearlyInterest.toFixed(2)}`);
+                currentPrincipal += yearlyInterest;
+            }
+
+            // Calculate interest for remaining months
+            if (months > 0) {
+                const monthlyInterest = currentPrincipal * rate / 100 * months / 12;
+                totalInterest += monthlyInterest;
+                breakdown.push(`${months} month(s): रु ${currentPrincipal.toFixed(2)} × ${rate}% × ${months}/12 = रु ${monthlyInterest.toFixed(2)}`);
+                
+            }
+
+            // Calculate interest for remaining days
+            if (days > 0) {
+                const dailyInterest = currentPrincipal * rate / 100 * days / 365;
+                totalInterest += dailyInterest;
+                breakdown.push(`${days} day(s): रु ${currentPrincipal.toFixed(2)} × ${rate}% × ${days}/365 = रु ${dailyInterest.toFixed(2)}`);
+            }
+
+            return {
+                totalInterest,
+                totalAmount: principal + totalInterest,
+                breakdown
+            };
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('ne-NP', {
+                style: 'currency',
+                currency: 'NPR',
+                minimumFractionDigits: 2
+            }).format(amount).replace('NPR', 'रु');
+        }
+
+        document.getElementById('interestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideError();
+
+            try {
+                // Get form values
+                const principal = parseFloat(document.getElementById('principal').value);
+                const rate = parseFloat(document.getElementById('rate').value);
+                
+                const startYear = parseInt(document.getElementById('startYear').value);
+                const startMonth = parseInt(document.getElementById('startMonth').value);
+                const startDay = parseInt(document.getElementById('startDay').value);
+                
+                const endYear = parseInt(document.getElementById('endYear').value);
+                const endMonth = parseInt(document.getElementById('endMonth').value);
+                const endDay = parseInt(document.getElementById('endDay').value);
+
+                // Validate inputs
+                if (principal <= 0) {
+                    throw new Error('Principal amount must be greater than 0');
+                }
+                if (rate <= 0) {
+                    throw new Error('Interest rate must be greater than 0');
+                }
+
+                // Validate dates
+                if (startDay > daysInMonth[startMonth - 1]) {
+                    throw new Error(`Invalid start day for ${nepaliMonths[startMonth - 1]}`);
+                }
+                if (endDay > daysInMonth[endMonth - 1]) {
+                    throw new Error(`Invalid end day for ${nepaliMonths[endMonth - 1]}`);
+                }
+
+                // Check if end date is after start date
+                const startDateValue = startYear * 10000 + startMonth * 100 + startDay;
+                const endDateValue = endYear * 10000 + endMonth * 100 + endDay;
+                
+                if (endDateValue <= startDateValue) {
+                    throw new Error('End date must be after start date');
+                }
+
+                // Calculate time difference
+                const timeDiff = calculateTimeDifference(startYear, startMonth, startDay, endYear, endMonth, endDay);
+                
+                // Calculate compound interest
+                const result = calculateCompoundInterest(principal, rate, timeDiff.years, timeDiff.months, timeDiff.days);
+
+                // Display results
+                const timeDurationText = `${timeDiff.years} years, ${timeDiff.months} months, ${timeDiff.days} days`;
+                
+                document.getElementById('timeDuration').textContent = timeDurationText;
+                document.getElementById('principalDisplay').textContent = formatCurrency(principal);
+                document.getElementById('totalInterest').textContent = formatCurrency(result.totalInterest);
+                document.getElementById('totalAmount').textContent = formatCurrency(result.totalAmount);
+
+                // Display breakdown
+                const breakdownDiv = document.getElementById('breakdownDetails');
+                breakdownDiv.innerHTML = result.breakdown.map(item => 
+                    `<div class="breakdown-item">${item}</div>`
+                ).join('');
+
+                document.getElementById('resultContainer').style.display = 'block';
+
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        // Set current Nepali date as default end date (approximate)
+        const currentYear = 2082; // Current BS year (approximate)
+        const currentMonth = 3; // Current month (approximate)
+        const currentDay = 5; // Current day (approximate)
+
+        // You can update these values based on current Nepali date
+        document.getElementById('endYear').value = currentYear;
+        document.getElementById('endMonth').value = currentMonth;
+        document.getElementById('endDay').value = currentDay;
+    </script>
+</body>
+</html>
