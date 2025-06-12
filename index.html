@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nepali Compound Interest Calculator</title>
+    <!-- PWA Manifest and Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Nepali InterestCalc">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <style>
         * {
             margin: 0;
@@ -33,6 +40,7 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative; /* For install button positioning */
         }
 
         .header h1 {
@@ -44,6 +52,36 @@
         .header p {
             font-size: 1.1rem;
             opacity: 0.9;
+        }
+
+        .install-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c3e50;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .install-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .install-btn.hidden {
+            display: none;
         }
 
         .form-container {
@@ -182,11 +220,11 @@
         .footer {
             background: linear-gradient(135deg, #2c3e50 0%, #4a69bd 100%);
             color: white;
-            padding: 20px 15px; /* Reduced padding */
+            padding: 20px 15px;
             text-align: center;
             border-top: 2px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            font-size: 0.9rem; /* Smaller base font size */
+            font-size: 0.9rem;
         }
 
         .footer::before {
@@ -202,8 +240,8 @@
 
         .footer .author {
             font-weight: 600;
-            font-size: 1.1rem; /* Slightly smaller */
-            margin-bottom: 10px; /* Reduced margin */
+            font-size: 1.1rem;
+            margin-bottom: 10px;
             letter-spacing: 0.5px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
             animation: fadeIn 1s ease-in;
@@ -213,13 +251,13 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 10px; /* Reduced gap */
-            margin-bottom: 10px; /* Reduced margin */
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .contact-info span {
-            font-size: 0.85rem; /* Smaller font size */
-            padding: 5px 10px; /* Reduced padding */
+            font-size: 0.85rem;
+            padding: 5px 10px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             transition: all 0.3s ease;
@@ -240,12 +278,12 @@
         }
 
         .about-author {
-            max-width: 500px; /* Slightly smaller width */
-            margin: 10px auto; /* Reduced margin */
-            font-size: 0.85rem; /* Smaller font size */
+            max-width: 500px;
+            margin: 10px auto;
+            font-size: 0.85rem;
             line-height: 1.5;
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px; /* Reduced padding */
+            padding: 10px 15px;
             border-radius: 8px;
             border-left: 3px solid #a8edea;
             transition: all 0.3s ease;
@@ -257,18 +295,18 @@
         }
 
         .footer-links {
-            margin-top: 10px; /* Reduced margin */
+            margin-top: 10px;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 10px; /* Reduced gap */
+            gap: 10px;
         }
 
         .footer-links a {
             color: #a8edea;
             text-decoration: none;
-            font-size: 0.85rem; /* Smaller font size */
-            padding: 5px 10px; /* Reduced padding */
+            font-size: 0.85rem;
+            padding: 5px 10px;
             border-radius: 15px;
             transition: all 0.3s ease;
         }
@@ -280,8 +318,8 @@
         }
 
         .footer p.copyright {
-            font-size: 0.8rem; /* Smaller font size */
-            margin-top: 10px; /* Reduced margin */
+            font-size: 0.8rem;
+            margin-top: 10px;
             opacity: 0.8;
         }
 
@@ -308,21 +346,27 @@
             }
 
             .footer {
-                padding: 15px 10px; /* Further reduced padding */
+                padding: 15px 10px;
             }
 
             .contact-info {
                 flex-direction: column;
-                gap: 5px; /* Reduced gap */
+                gap: 5px;
             }
 
             .footer-links {
                 flex-direction: column;
-                gap: 5px; /* Reduced gap */
+                gap: 5px;
             }
 
             .about-author {
-                padding: 8px 12px; /* Further reduced padding */
+                padding: 8px 12px;
+            }
+
+            .install-btn {
+                position: static;
+                margin-top: 15px;
+                width: 100%;
             }
         }
     </style>
@@ -332,6 +376,7 @@
         <div class="header">
             <h1>🇳🇵 Nepali Interest Calculator</h1>
             <p>Compound Interest Calculator with Nepali Date System</p>
+            <button id="installButton" class="install-btn hidden">Install App</button>
         </div>
         
         <div class="form-container">
@@ -424,29 +469,77 @@
 
         <div class="footer">
             <p class="author">Powered by Ujjawal Pandey</p>
-            
-            
             <div class="footer-links">
                 <a href="mailto:uzwalpandey1234@gmail.com">Contact</a>
-            <div class="contact-info">
-                <span><a href="tel:+9779804898454">+977 9804898454</a></span>
-                <span><a href="mailto:uzwalpandey1234@gmail.com">uzwalpandey1234@gmail.com</a></span>
-            </div>
+                <div class="contact-info">
+                    <span><a href="tel:+9779804898454">+977 9804898454</a></span>
+                    <span><a href="mailto:uzwalpandey1234@gmail.com">uzwalpandey1234@gmail.com</a></span>
+                </div>
                 <a href="https://www.linkedin.com/in/ujjawal-pandey-212a9b29a/">About Author</a>
-                
             </div>
             <p class="copyright">© 2082 Nepali Interest Calculator. All rights reserved.</p>
         </div>
     </div>
 
     <script>
-        // Nepali month names for display
+        // PWA Install Prompt Logic
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+
+        // Listen for the beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the default mini-infobar from appearing
+            e.preventDefault();
+            // Store the event for later use
+            deferredPrompt = e;
+            // Show the install button
+            installButton.classList.remove('hidden');
+        });
+
+        // Handle install button click
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                } else {
+                    console.log('User dismissed the install prompt');
+                }
+                // Clear the deferred prompt
+                deferredPrompt = null;
+                // Hide the install button
+                installButton.classList.add('hidden');
+            }
+        });
+
+        // Register the service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // App installed event
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installButton.classList.add('hidden');
+        });
+
+        // Existing JavaScript for the calculator
         const nepaliMonths = [
             'Baisakh', 'Jestha', 'Ashadh', 'Shrawan', 'Bhadra', 'Ashwin',
             'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra'
         ];
 
-        // Days in each Nepali month (approximate - this can vary by year)
         const daysInMonth = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
 
         function calculateTimeDifference(startYear, startMonth, startDay, endYear, endMonth, endDay) {
@@ -454,18 +547,15 @@
             let months = endMonth - startMonth;
             let days = endDay - startDay;
 
-            // Adjust for negative days - borrow from previous month
             if (days < 0) {
                 months--;
-                // Get days from previous month
                 let prevMonth = endMonth - 1;
                 if (prevMonth <= 0) {
                     prevMonth = 12;
                 }
-                days += daysInMonth[prevMonth - 1]; // Add previous month's days
+                days += daysInMonth[prevMonth - 1];
             }
 
-            // Adjust for negative months - borrow from previous year
             if (months < 0) {
                 years--;
                 months += 12;
@@ -479,7 +569,6 @@
             let totalInterest = 0;
             let breakdown = [];
 
-            // Calculate interest for complete years
             for (let year = 1; year <= years; year++) {
                 const yearlyInterest = currentPrincipal * rate / 100;
                 totalInterest += yearlyInterest;
@@ -487,15 +576,12 @@
                 currentPrincipal += yearlyInterest;
             }
 
-            // Calculate interest for remaining months
             if (months > 0) {
                 const monthlyInterest = currentPrincipal * rate / 100 * months / 12;
                 totalInterest += monthlyInterest;
                 breakdown.push(`${months} month(s): रु ${currentPrincipal.toFixed(2)} × ${rate}% × ${months}/12 = रु ${monthlyInterest.toFixed(2)}`);
-                
             }
 
-            // Calculate interest for remaining days
             if (days > 0) {
                 const dailyInterest = currentPrincipal * rate / 100 * days / 365;
                 totalInterest += dailyInterest;
@@ -533,7 +619,6 @@
             hideError();
 
             try {
-                // Get form values
                 const principal = parseFloat(document.getElementById('principal').value);
                 const rate = parseFloat(document.getElementById('rate').value);
                 
@@ -545,7 +630,6 @@
                 const endMonth = parseInt(document.getElementById('endMonth').value);
                 const endDay = parseInt(document.getElementById('endDay').value);
 
-                // Validate inputs
                 if (principal <= 0) {
                     throw new Error('Principal amount must be greater than 0');
                 }
@@ -553,7 +637,6 @@
                     throw new Error('Interest rate must be greater than 0');
                 }
 
-                // Validate dates
                 if (startDay > daysInMonth[startMonth - 1]) {
                     throw new Error(`Invalid start day for ${nepaliMonths[startMonth - 1]}`);
                 }
@@ -561,7 +644,6 @@
                     throw new Error(`Invalid end day for ${nepaliMonths[endMonth - 1]}`);
                 }
 
-                // Check if end date is after start date
                 const startDateValue = startYear * 10000 + startMonth * 100 + startDay;
                 const endDateValue = endYear * 10000 + endMonth * 100 + endDay;
                 
@@ -569,13 +651,10 @@
                     throw new Error('End date must be after start date');
                 }
 
-                // Calculate time difference
                 const timeDiff = calculateTimeDifference(startYear, startMonth, startDay, endYear, endMonth, endDay);
                 
-                // Calculate compound interest
                 const result = calculateCompoundInterest(principal, rate, timeDiff.years, timeDiff.months, timeDiff.days);
 
-                // Display results
                 const timeDurationText = `${timeDiff.years} years, ${timeDiff.months} months, ${timeDiff.days} days`;
                 
                 document.getElementById('timeDuration').textContent = timeDurationText;
@@ -583,7 +662,6 @@
                 document.getElementById('totalInterest').textContent = formatCurrency(result.totalInterest);
                 document.getElementById('totalAmount').textContent = formatCurrency(result.totalAmount);
 
-                // Display breakdown
                 const breakdownDiv = document.getElementById('breakdownDetails');
                 breakdownDiv.innerHTML = result.breakdown.map(item => 
                     `<div class="breakdown-item">${item}</div>`
@@ -596,12 +674,10 @@
             }
         });
 
-        // Set current Nepali date as default end date (approximate)
-        const currentYear = 2082; // Current BS year (approximate)
-        const currentMonth = 3; // Current month (approximate)
-        const currentDay = 5; // Current day (approximate)
+        const currentYear = 2082;
+        const currentMonth = 3;
+        const currentDay = 5;
 
-        // You can update these values based on current Nepali date
         document.getElementById('endYear').value = currentYear;
         document.getElementById('endMonth').value = currentMonth;
         document.getElementById('endDay').value = currentDay;
